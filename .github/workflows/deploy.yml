@@ -1,0 +1,52 @@
+name: CI/CD Build and Push
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Required to push to GHCR
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Install Nix
+      - uses: DeterminateSystems/nix-installer-action@v14
+      
+      # 2. Setup Magic Nix Cache (Saves hours of build time)
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      # 3. Build the Backend Docker Image
+      - name: Build Backend Image
+        run: |
+          nix build .#backend-docker -o result-backend
+          docker load < result-backend
+
+      # 4. Build the Frontend Docker Image
+      - name: Build Frontend Image
+        run: |
+          nix build .#frontend-docker -o result-frontend
+          docker load < result-frontend
+
+      # 5. Log in to GitHub Container Registry
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 6. Tag and Push
+      - name: Push Images
+        run: |
+          # Use your github username/repo name lowercased
+          IMAGE_ID=ghcr.io/${{ github.repository }}
+          
+          docker tag backend-prod:latest $IMAGE_ID/backend:latest
+          docker tag frontend-prod:latest $IMAGE_ID/frontend:latest
+          
+          docker push $IMAGE_ID/backend:latest
+          docker push $IMAGE_ID/frontend:latest
