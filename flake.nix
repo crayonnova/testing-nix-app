@@ -19,7 +19,7 @@
       # devShells: Define the environment for 'nix develop'.
       # This is for coding locally, not for production.
       devShells.${system} = {
-        default = pkgs.mkShell {
+        default = pkgs.mkShellNoCC {
           packages = [
             pkgs.nodejs_22
             pkgs.sqlite
