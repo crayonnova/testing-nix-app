@@ -19,7 +19,7 @@ app.get("/items", (req, res) => {
 });
 
 app.get("/version", (req, res) => {
-  res.json({ version: "1.0.2", updated: new Date().toISOString() });
+  res.json({ version: "1.0.3", updated: new Date().toISOString() });
 });
 
 // POST a new item
