@@ -18,6 +18,10 @@ app.get("/items", (req, res) => {
   res.json(items);
 });
 
+app.get("/version", (req, res) => {
+  res.json({ version: "1.0.1", updated: new Date().toISOString() });
+});
+
 // POST a new item
 app.post("/items", (req, res) => {
   const { name } = req.body;
