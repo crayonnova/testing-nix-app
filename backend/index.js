@@ -9,7 +9,7 @@ app.use(express.json());
 
 // Simplified: In-memory data store instead of SQLite
 let items = [
-  { id: 1, name: "Initial Item" }
+  { id: 1, name: "It is updated!!" }
 ];
 let nextId = 2;
 
