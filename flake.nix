@@ -54,7 +54,7 @@
 
           # npmDepsHash: A security feature. Nix fetches all npm modules and hashes them.
           # If a dev adds a package to package.json, this hash MUST be updated.
-          npmDepsHash = "sha256-yt905SMDXbcpFtzdp7IzZT35Wqby1E57iRWy8uUVf9E=";
+          npmDepsHash = "sha256-SGr7plngpo4rLTCHf8vbBeX58Gr1XG59KSFmsqqTsnw=";
           nodejs = pkgs.nodejs_22;
 
           # We skip the build phase because this is a plain JS app (no TypeScript/Babel).
@@ -80,7 +80,7 @@
           pname = "frontend";
           version = "1.0.0";
           src = ./frontend;
-          npmDepsHash = "sha256-JOHNWG+2FBUlsJ3a+Ku5xQnqO3Oh6fMJaDWscX4K01s=";
+          npmDepsHash = "sha256-Wg/jkaQbHGHQ+0jgXPTEW4sndeob7kXarxg7afUFckE=";
           nodejs = pkgs.nodejs_22;
           env = {
             VITE_API_URL = "http://localhost:3001";
