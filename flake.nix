@@ -63,15 +63,15 @@
           # postInstall: Custom logic to make the app "runnable".
           # Nix usually just copies files; we need to create a 'bin' script.
           postInstall = ''
-                        mkdir -p $out/bin
-                        # Create a wrapper script so we don't have to type 'node path/to/index.js'
-                        # #!/bin/sh is the 'shebang' telling the OS this is a script.
-                        cat <<EOF > $out/bin/backend
-            #!/bin/sh
-            exec ${pkgs.nodejs_22}/bin/node $out/lib/node_modules/backend/index.js
-            EOF
-                        # Make the script executable, otherwise 'nix run' or Docker will fail.
-                        chmod +x $out/bin/backend
+mkdir -p $out/bin
+# Create a wrapper script so we don't have to type 'node path/to/index.js'
+# #!/bin/sh is the 'shebang' telling the OS this is a script.
+cat <<EOF > $out/bin/backend
+#!/bin/sh
+exec ${pkgs.nodejs_22}/bin/node $out/lib/node_modules/backend/index.js
+EOF
+# Make the script executable, otherwise 'nix run' or Docker will fail.
+chmod +x $out/bin/backend
           '';
         };
 
@@ -90,8 +90,14 @@
           # installPhase: Tells Nix which files to keep in the final output.
           # We only care about the static 'dist' folder created by Vite.
           installPhase = ''
-            mkdir -p $out/dist
-            cp -r dist/* $out/dist/
+mkdir -p $out/dist
+cp -r dist/* $out/dist/
+mkdir -p $out/bin
+cat <<EOF > $out/bin/frontend
+#!/bin/sh
+exec ${pkgs.nodejs_22}/bin/node ${pkgs.nodePackages.serve}/bin/serve -s $out/dist -l 8080
+EOF
+chmod +x $out/bin/frontend
           '';
         };
 
@@ -162,6 +168,14 @@
             description = "Backend system";
           };
           program = "${self.packages.${system}.backend-prod}/bin/backend";
+        };
+
+        frontend = {
+          type = "app";
+          meta = {
+            description = "Frontend static server";
+          };
+          program = "${self.packages.${system}.frontend-prod}/bin/frontend";
         };
       };
     };
