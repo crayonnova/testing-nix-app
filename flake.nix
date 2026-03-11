@@ -78,12 +78,12 @@
         # 2. FRONTEND BUILD (Vite)
         frontend-prod = pkgs.buildNpmPackage {
           pname = "frontend";
-          version = "1.0.0";
+          version = "1.0.1";
           src = ./frontend;
           npmDepsHash = "sha256-Wg/jkaQbHGHQ+0jgXPTEW4sndeob7kXarxg7afUFckE=";
           nodejs = pkgs.nodejs_22;
           env = {
-            VITE_API_URL = "http://localhost:3001";
+            VITE_API_URL = "http://testing-nix-backend:3001";
           };
           npmBuildScript = "build";
 
