@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(cors());
@@ -31,7 +31,7 @@ app.post("/items", (req, res) => {
 
   const newItem = { id: nextId++, name };
   items.push(newItem);
-  
+
   console.log(`Added item: ${name}`);
   res.json(newItem);
 });
