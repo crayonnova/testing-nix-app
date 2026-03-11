@@ -12,8 +12,7 @@
     let
       # system: Tells Nix which CPU/OS architecture to build for.
       system = "x86_64-linux";
-      # pkgs: The actual collection of thousands of programs available in Nixpkgs.
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = nixpkgs.legacyPackages.${system};
     in
     {
       # devShells: Define the environment for 'nix develop'.
@@ -23,8 +22,24 @@
           packages = [
             pkgs.nodejs_22
             pkgs.sqlite
-            pkgs.ruby
           ];
+
+          shellHook = ''
+            set -a
+            if [ -f ./backend/.env ]; then
+              source ./backend/.env
+              echo "./backend/.env found and loaded"
+            else
+              echo "Create ./backend/.env"
+            fi
+            if [ -f ./frontend/.env ]; then
+              source ./frontend/.env
+              echo "./frontend/.env found and loaded"
+            else
+              echo "Create ./frontend/.env"
+            fi
+            set +a
+          '';
         };
       };
 
@@ -67,8 +82,9 @@
           src = ./frontend;
           npmDepsHash = "sha256-JOHNWG+2FBUlsJ3a+Ku5xQnqO3Oh6fMJaDWscX4K01s=";
           nodejs = pkgs.nodejs_22;
-
-          # Vite uses a build script ('npm run build') to create a 'dist' folder.
+          env = {
+            VITE_API_URL = "http://localhost:3001";
+          };
           npmBuildScript = "build";
 
           # installPhase: Tells Nix which files to keep in the final output.
@@ -131,6 +147,9 @@
             ExposedPorts = {
               "8080/tcp" = { };
             };
+            Env = [
+              "NODE_ENV=production"
+            ];
           };
         };
       };
@@ -139,6 +158,9 @@
       apps.${system} = {
         backend = {
           type = "app";
+          meta = {
+            description = "Backend system";
+          };
           program = "${self.packages.${system}.backend-prod}/bin/backend";
         };
       };
