@@ -83,7 +83,7 @@
           npmDepsHash = "sha256-Wg/jkaQbHGHQ+0jgXPTEW4sndeob7kXarxg7afUFckE=";
           nodejs = pkgs.nodejs_22;
           env = {
-            VITE_API_URL = "http://testing-nix-backend:3001";
+            VITE_API_URL = "http://backend.proclub.work";
           };
           npmBuildScript = "build";
 
